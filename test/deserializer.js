@@ -82,7 +82,32 @@ describe('JSON API Deserializer', function () {
         done(null, json);
       });
     });
+
+    it('should return links', function (done) {
+      var dataSet = {
+        data: {
+          type: 'users',
+          id: '54735750e16638ba1eee59cb',
+          attributes: { 'first-name': 'Sandro', 'last-name': 'Munda' },
+          links: { 'related': 'http://somelink.com/' }
+        }
+      };
+
+      new JSONAPIDeserializer()
+        .deserialize(dataSet, function (err, json) {
+          expect(json).to.be.eql({
+            id: '54735750e16638ba1eee59cb',
+            'first-name': 'Sandro',
+            'last-name': 'Munda',
+            'links': { 'related': 'http://somelink.com/' }
+          });
+
+          done(null, json);
+        });
+    });
   });
+
+      
 
   describe('Nested documents', function () {
     it('should returns attributes', function (done) {
@@ -210,6 +235,150 @@ describe('JSON API Deserializer', function () {
           'zip-code': '23185',
           country: 'USA'
         });
+
+        done(null, json);
+      });
+    });
+
+    it('should include links in included related resources in result', function (done) {
+      var dataSet = {
+        data: [{
+          type: 'users',
+          id: '54735750e16638ba1eee59cb',
+          attributes: {
+            'first-name': 'Sandro',
+            'last-name': 'Munda'
+          },
+          relationships: {
+            address: {
+              data: { type: 'addresses', id: '54735722e16620ba1eee36af' }
+            }
+          }
+        }, {
+          type: 'users',
+          id: '5490143e69e49d0c8f9fc6bc',
+          attributes: {
+            'first-name': 'Lawrence',
+            'last-name': 'Bennett'
+          },
+          relationships: {
+            address: {
+              data: { type: 'addresses', id: '54735697e16624ba1eee36bf' }
+            }
+          }
+        }],
+        included: [{
+          type: 'addresses',
+          id: '54735722e16620ba1eee36af',
+          attributes: {
+            'address-line1': '406 Madison Court',
+            'zip-code': '49426',
+            country: 'USA'
+          },
+          links: { 'related': 'http//some link 1'}
+        }, {
+          type: 'addresses',
+          id: '54735697e16624ba1eee36bf',
+          attributes: {
+            'address-line1': '361 Shady Lane',
+            'zip-code': '23185',
+            country: 'USA'
+          },
+          links: { 'related': 'http//some link 2'}
+        }]
+      };
+
+      new JSONAPIDeserializer()
+      .deserialize(dataSet, function (err, json) {
+        expect(json[0].address.links).to.be.eql({ 'related': 'http//some link 1'
+        });
+
+        expect(json[1].address.links).to.be.eql({ 'related': 'http//some link 2'
+        });
+
+        done(null, json);
+      });
+    });
+
+    it('should include links in relationship in result when no included related resource', function (done) {
+      var dataSet = {
+        data: [{
+          type: 'users',
+          id: '54735750e16638ba1eee59cb',
+          attributes: {
+            'first-name': 'Sandro',
+            'last-name': 'Munda'
+          },
+          relationships: {
+            address: {
+              links: { 'related': 'http//some link 1' }
+            }
+          }
+        }, {
+          type: 'users',
+          id: '5490143e69e49d0c8f9fc6bc',
+          attributes: {
+            'first-name': 'Lawrence',
+            'last-name': 'Bennett'
+          },
+          relationships: {
+            address: {
+              links: { 'related': 'http//some link 2' }
+            }
+          }
+        }]
+      };
+
+      new JSONAPIDeserializer()
+      .deserialize(dataSet, function (err, json) {
+        expect(json[0].address.links).to.be.eql({ 'related': 'http//some link 1'
+        });
+
+        expect(json[1].address.links).to.be.eql({ 'related': 'http//some link 2'
+        });
+
+        done(null, json);
+      });
+    });
+
+  it('should include links with same key only once when specified at relationship level and at related resource level', function (done) {
+      var dataSet = {
+        data: [{
+          type: 'users',
+          id: '54735750e16638ba1eee59cb',
+          attributes: {
+            'first-name': 'Sandro',
+            'last-name': 'Munda'
+          },
+          relationships: {
+            address: {
+              data: { type: 'addresses', id: '54735722e16620ba1eee36af' },
+              links: { 'a': 'http//somelinka',
+              'b': 'http//somelinkb'}
+            }
+          }
+        }],
+        included: [{
+          type: 'addresses',
+          id: '54735722e16620ba1eee36af',
+          attributes: {
+            'address-line1': '406 Madison Court',
+            'zip-code': '49426',
+            country: 'USA'
+          },
+          links: { 'a': 'http//somelinka',
+          'c': 'http//somelinkc'}
+        }]
+      };
+
+      new JSONAPIDeserializer()
+      .deserialize(dataSet, function (err, json) {
+        expect(json[0].address.links).to.be.eql({ 
+          'a': 'http//somelinka',
+          'b': 'http//somelinkb',
+          'c': 'http//somelinkc'
+        });
+
 
         done(null, json);
       });
@@ -750,4 +919,6 @@ describe('JSON API Deserializer', function () {
           });
     });
   });
+
+  
 });
