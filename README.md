@@ -1,8 +1,10 @@
 # JSON API Serializer
-[![Build Status](https://travis-ci.org/SeyZ/jsonapi-serializer.svg?branch=master)](https://travis-ci.org/SeyZ/jsonapi-serializer)
 
 A Node.js framework agnostic library for serializing your data to [JSON
 API](http://jsonapi.org) (1.0 compliant).
+
+Adapted from https://github.com/SeyZ/jsonapi-serializer Oct 2016 for use by Magnum to serialize/deserialize Travel Protocol requests/responses
+Rest of ReadMe copied from original
 
 - [Migrate from 2.0 to 3.0](https://github.com/SeyZ/jsonapi-serializer/wiki/Migrate-from-2.0-to-3.0)
 - [Migrate from 1.x to 2.0](https://github.com/SeyZ/jsonapi-serializer/wiki/Migrate-from-1.x-to-2.0)

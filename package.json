@@ -1,14 +1,17 @@
 {
   "name": "jsonapi-serializer",
-  "version": "3.4.1",
-  "description": "A Node.js framework agnostic library for serializing your data to JSON API",
+  "version": "3.4.2",
+  "description": "A Node.js framework agnostic library for serializing your data to JSON API. Forked from SeyZ/jsonapi-serializer (v3.4.1)",
   "main": "index.js",
   "scripts": {
     "test": "./node_modules/mocha/bin/mocha"
   },
-  "author": "Sandro Munda <sandro@munda.me>",
+  "contributors": [
+    "Sandro Munda <sandro@munda.me>",
+    "Martin Cheesbrough <martin.cheesbrough@thetrainline.com>"
+  ],
   "license": "MIT",
-  "repository": "SeyZ/jsonapi-serializer",
+  "repository": "https://github.thetrainline.com/Magnum/json-serializer",
   "dependencies": {
     "bluebird": "^2.10.2",
     "inflected": "^1.1.6",
@@ -20,5 +23,8 @@
     "grunt-browserify": "^4.0.0",
     "mocha": "^2.2.5",
     "mongoose": "^4.3.4"
+  },
+  "publishConfig": {
+    "registry": "http://npm.artifacts.ttldev/"
   }
 }
